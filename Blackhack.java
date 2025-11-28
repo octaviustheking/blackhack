@@ -5,6 +5,7 @@ public class Blackhack {
 
     public static int minMoney = 5000;
 
+    public static boolean hasInventory = false;
     public static boolean gunOwned = false;
 
     static List <Integer> cards = new LinkedList<>();
@@ -212,45 +213,48 @@ public class Blackhack {
         }
         else if (action.equals("inventory")) {
             System.out.println("You have the following: ");
-            if (gunOwned) {
-                System.out.println("A gun.");
+            if (hasInventory) {
+                if (gunOwned) {
+                    System.out.println("Gun");
+                }
 
-                boolean decidingGun = true;
-                String useGun = null;
+                boolean decidingItem = true;
+                String item = null;
 
-                while (decidingGun) {
-                    System.out.print("Would you like to use it? (yes/no) > ");
-                    useGun = input.next();
+                while (decidingItem) {
+                    System.out.print("What would you like to use? (name of item/nothing) > ");
+                    item = input.next();
 
-                    if (!useGun.equalsIgnoreCase("yes") && !useGun.equalsIgnoreCase("no")) {
-                        System.out.println("Please enter yes or no.");
+                    if (!item.equalsIgnoreCase("gun") && !item.equalsIgnoreCase("nothing")) {
+                        System.out.println("Please enter the name of an item or nothing.");
                     }
                     else {
-                        decidingGun = false;
+                        decidingItem = false;
                     }
                 }
 
-                if (useGun.equalsIgnoreCase("yes")) {
-                    System.out.println("You shoot the dealer dead and pocket the $1000 in his wallet. ");
-                    System.out.println("You now have $" + (money + 1000) + "!");
-                    System.out.println("As you stand to leave, however, the police arrive. ");
-                    System.out.println("You are placed in handcuffs are dragged outside. ");
-                    System.out.println("Thanks for playing Blackhack!");
-                    System.exit(0);
+                if (item.equalsIgnoreCase("gun")) {
+                    if (gunOwned) {
+                        System.out.println("You shoot the dealer dead and pocket the $1000 in his wallet. ");
+                        System.out.println("You now have $" + (money + 1000) + "!");
+                        System.out.println("As you stand to leave, however, the police arrive. ");
+                        System.out.println("You are placed in handcuffs are dragged outside. ");
+                        System.out.println("Thanks for playing Blackhack!");
+                        return false;
+                    }
+                    else {
+                        System.out.println("You do not own a gun!");
+                        return true;
+                    }
                 }
                 else {
-                    System.out.println("The dealer sees your gun and decides to leave. You go to find another dealer.");
-                    game();
+                    return true;
                 }
-
             }
             else {
                 System.out.println("Nothing!");
-                System.out.println("However, the dealer gets suspicious and leaves.");
-                System.out.println("You stand up and find another dealer.");
-                game();
+                return true;
             }
-            return false;
         }
         else {
             int newCard = newCard();
@@ -457,12 +461,15 @@ public class Blackhack {
                     System.out.println("You return to the dealer. ");
                     done = true;
                 }
-                else if (option == 1) {
-                    gunOwned = true;
-                    money -= 300;
-                    System.out.println("You purchased a gun for $300.");
-                    System.out.println("The shady man waves you away.");
-                    done = true;
+                else {
+                    hasInventory = true;
+                    if (option == 1) {
+                        gunOwned = true;
+                        money -= 300;
+                        System.out.println("You purchased a gun for $300.");
+                        System.out.println("The shady man waves you away.");
+                        done = true;
+                    }
                 }
             }
         }
