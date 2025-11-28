@@ -3,6 +3,10 @@ import java.util.*;
 public class Blackhack {
     public static int money = 500;
 
+    public static int minMoney = 5000;
+
+    public static boolean gunOwned = false;
+
     static List <Integer> cards = new LinkedList<>();
 
     public static void main(String[] args) {
@@ -40,6 +44,27 @@ public class Blackhack {
 
         int bet = 0;
 
+        boolean decidingVisit = true;
+
+        System.out.println("You notice there is a shady man at the back of the casino. ");
+
+        while (decidingVisit) {
+            System.out.print("Do you choose to visit him? (yes/no) > ");
+
+            String visit = input.next();
+
+            if (visit.equalsIgnoreCase("yes")) {
+                shop();
+                decidingVisit = false;
+            }
+            else if (visit.equalsIgnoreCase("no")) {
+                decidingVisit = false;
+            }
+            else {
+                System.out.println("Please enter yes or no. ");
+            }
+        }
+
         while (!bettingDone) {
             System.out.println("You have $" + money + ".");
             System.out.print("How much would you like to bet? > ");
@@ -52,7 +77,10 @@ public class Blackhack {
 
             bet = input.nextInt();
 
-            if (bet <= money) {
+            if (bet < 0) {
+                System.out.println("Please enter an amount greater than 0.");
+            }
+            else if (bet <= money) {
                 bettingDone = true;
             } else {
                 System.out.println("You don't have that much money!");
@@ -164,10 +192,10 @@ public class Blackhack {
             total = cardValue(playerCards);
             System.out.println("That's a total of " + total + "!");
             if (total <= 21) {
-                System.out.print("Would you like to hit or stand? > ");
+                System.out.print("Would you like to hit, stand, or check your inventory? (hit/stand/inventory) > ");
                 action = input.next();
 
-                if (!action.equals("hit") && !action.equals("stand")) {
+                if (!action.equalsIgnoreCase("hit") && !action.equalsIgnoreCase("stand") && !action.equalsIgnoreCase("inventory")) {
                     System.out.println("That is not a valid action!");
                 } else {
                     decidingAction = false;
@@ -180,6 +208,48 @@ public class Blackhack {
 
         if (action.equals("stand")) {
             dealerTurn(total, bet);
+            return false;
+        }
+        else if (action.equals("inventory")) {
+            System.out.println("You have the following: ");
+            if (gunOwned) {
+                System.out.println("A gun.");
+
+                boolean decidingGun = true;
+                String useGun = null;
+
+                while (decidingGun) {
+                    System.out.print("Would you like to use it? (yes/no) > ");
+                    useGun = input.next();
+
+                    if (!useGun.equalsIgnoreCase("yes") && !useGun.equalsIgnoreCase("no")) {
+                        System.out.println("Please enter yes or no.");
+                    }
+                    else {
+                        decidingGun = false;
+                    }
+                }
+
+                if (useGun.equalsIgnoreCase("yes")) {
+                    System.out.println("You shoot the dealer dead and pocket the $1000 in his wallet. ");
+                    System.out.println("You now have $" + (money + 1000) + "!");
+                    System.out.println("As you stand to leave, however, the police arrive. ");
+                    System.out.println("You are placed in handcuffs are dragged outside. ");
+                    System.out.println("Thanks for playing Blackhack!");
+                    System.exit(0);
+                }
+                else {
+                    System.out.println("The dealer sees your gun and decides to leave. You go to find another dealer.");
+                    game();
+                }
+
+            }
+            else {
+                System.out.println("Nothing!");
+                System.out.println("However, the dealer gets suspicious and leaves.");
+                System.out.println("You stand up and find another dealer.");
+                game();
+            }
             return false;
         }
         else {
@@ -353,5 +423,48 @@ public class Blackhack {
             }
         }
 
+    }
+
+    static void shop() {
+        System.out.println("You decide to visit the shady man in the back of the casino.");
+
+        boolean done = false;
+
+        if (money < minMoney) {
+            System.out.println("He tells you he doesn't deal with small fry who have less than $" + minMoney + ".");
+            System.out.println("You return to the dealer.");
+        }
+        else {
+            while (!done) {
+                System.out.println("He shows you his wares.");
+                System.out.println("You have $" + money + ".");
+                System.out.println("What would you like to buy?");
+                System.out.println("0. Leave");
+                System.out.println("1. A gun ($300)");
+                System.out.print("Type the number of the item you would like to purchase. > ");
+
+                Scanner input = new Scanner(System.in);
+
+                while (!input.hasNextInt())
+                {
+                    input.next();
+                    System.out.print("Please enter an integer. > ");
+                }
+
+                int option = input.nextInt();
+
+                if (option == 0) {
+                    System.out.println("You return to the dealer. ");
+                    done = true;
+                }
+                else if (option == 1) {
+                    gunOwned = true;
+                    money -= 300;
+                    System.out.println("You purchased a gun for $300.");
+                    System.out.println("The shady man waves you away.");
+                    done = true;
+                }
+            }
+        }
     }
 }
