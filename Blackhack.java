@@ -19,20 +19,20 @@ public class Blackhack {
         }
 
         for (int i = 1; i <= 4; i++) {
-                cards.add(2);
-                cards.add(3);
-                cards.add(4);
-                cards.add(5);
-                cards.add(6);
-                cards.add(7);
-                cards.add(8);
-                cards.add(9);
-                cards.add(10);
-                cards.add(11);
-                cards.add(12);
-                cards.add(13);
-                cards.add(14);
-            }
+            cards.add(2);
+            cards.add(3);
+            cards.add(4);
+            cards.add(5);
+            cards.add(6);
+            cards.add(7);
+            cards.add(8);
+            cards.add(9);
+            cards.add(10);
+            cards.add(11);
+            cards.add(12);
+            cards.add(13);
+            cards.add(14);
+        }
 
         boolean bettingDone = false;
 
@@ -41,17 +41,23 @@ public class Blackhack {
         int bet = 0;
 
         while (!bettingDone) {
-                System.out.println("You have $" + money + ".");
-                System.out.print("How much would you like to bet? > ");
+            System.out.println("You have $" + money + ".");
+            System.out.print("How much would you like to bet? > ");
 
-                bet = input.nextInt();
-
-                if (bet <= money) {
-                    bettingDone = true;
-                } else {
-                    System.out.println("You don't have that much money!");
-                }
+            while (!input.hasNextInt())
+            {
+                input.next();
+                System.out.print("Please enter an integer. > ");
             }
+
+            bet = input.nextInt();
+
+            if (bet <= money) {
+                bettingDone = true;
+            } else {
+                System.out.println("You don't have that much money!");
+            }
+        }
 
         int card1 = newCard();
         int card2 = newCard();
@@ -249,8 +255,6 @@ public class Blackhack {
             }
         }
         else if (dealerTotal > playerTotal) {
-            System.out.println("The dealer has a total of " + dealerTotal + "!");
-            System.out.println("You only had a total of " + playerTotal + "!");
             gameOver(bet);
         }
         else if (dealerTotal == playerTotal) {
@@ -258,36 +262,34 @@ public class Blackhack {
             gameOver(bet);
         }
         else {
-                System.out.println("You won!");
-                System.out.println("The dealer only had a total of " + dealerTotal + "!");
-                System.out.println("You had a total of " + playerTotal + "!");
-                System.out.println("You earned $" + bet + "!");
-                money += bet;
-                boolean deciding = true;
+            System.out.println("You won!");
+            System.out.println("You earned $" + bet + "!");
+            money += bet;
+            boolean deciding = true;
 
-                while (deciding) {
-                    System.out.print("Play Again? (yes/no) > ");
+            while (deciding) {
+                System.out.print("Play Again? (yes/no) > ");
 
-                    Scanner input = new Scanner(System.in);
+                Scanner input = new Scanner(System.in);
 
-                    String action = input.next();
+                String action = input.next();
 
-                    if (!action.equals("yes") && !action.equals("no")) {
-                        System.out.println("Invalid action! Please try again!");
+                if (!action.equals("yes") && !action.equals("no")) {
+                    System.out.println("Invalid action! Please try again!");
+                }
+                else {
+                    deciding = false;
+                    if (action.equals("no")) {
+                        System.out.println("You ended up with $" + money + ".");
+                        System.out.println("Thanks for playing Blackhack!");
+                        System.exit(0);
                     }
                     else {
-                        deciding = false;
-                        if (action.equals("no")) {
-                            System.out.println("You ended up with $" + money + ".");
-                            System.out.println("Thanks for playing Blackhack!");
-                            System.exit(0);
-                        }
-                        else {
-                            game();
-                        }
+                        game();
                     }
                 }
             }
+        }
 
     }
 
@@ -353,4 +355,3 @@ public class Blackhack {
 
     }
 }
-
