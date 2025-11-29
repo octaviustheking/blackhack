@@ -1,12 +1,13 @@
 import java.util.*;
 
 public class Blackhack {
-    public static int money = 500;
+    public static int money = 50000;
 
     public static int minMoney = 5000;
 
     public static boolean hasInventory = false;
     public static boolean gunOwned = false;
+    public static int fakeFace = 0;
 
     static List <Integer> cards = new LinkedList<>();
 
@@ -217,6 +218,9 @@ public class Blackhack {
                 if (gunOwned) {
                     System.out.println("Gun");
                 }
+                if (fakeFace > 0) {
+                    System.out.println("Face");
+                }
 
                 boolean decidingItem = true;
                 String item = null;
@@ -225,7 +229,7 @@ public class Blackhack {
                     System.out.print("What would you like to use? (name of item/nothing) > ");
                     item = input.next();
 
-                    if (!item.equalsIgnoreCase("gun") && !item.equalsIgnoreCase("nothing")) {
+                    if (!item.equalsIgnoreCase("gun") && !item.equalsIgnoreCase("face") && !item.equalsIgnoreCase("nothing")) {
                         System.out.println("Please enter the name of an item or nothing.");
                     }
                     else {
@@ -246,6 +250,17 @@ public class Blackhack {
                         System.out.println("You do not own a gun!");
                         return true;
                     }
+                }
+                else if (item.equalsIgnoreCase("face")) {
+                    if (fakeFace > 0) {
+                        System.out.println("You secretly add a face card to your hand.");
+                        Random randomCard = new Random();
+                        playerCards.add((randomCard.nextInt(13 - 11 + 1)) + 11);
+                    }
+                    else {
+                        System.out.println("You do not own a face card!");
+                    }
+                    return true;
                 }
                 else {
                     return true;
@@ -445,6 +460,7 @@ public class Blackhack {
                 System.out.println("What would you like to buy?");
                 System.out.println("0. Leave");
                 System.out.println("1. A gun ($300)");
+                System.out.println("2. A face card ($200)");
                 System.out.print("Type the number of the item you would like to purchase. > ");
 
                 Scanner input = new Scanner(System.in);
@@ -467,6 +483,13 @@ public class Blackhack {
                         gunOwned = true;
                         money -= 300;
                         System.out.println("You purchased a gun for $300.");
+                        System.out.println("The shady man waves you away.");
+                        done = true;
+                    }
+                    else if (option == 2) {
+                        fakeFace += 1;
+                        money -= 200;
+                        System.out.println("You purchased a face card for $200.");
                         System.out.println("The shady man waves you away.");
                         done = true;
                     }
