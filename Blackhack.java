@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Blackhack {
-    public static int money = 500;
+    public static int money = 11500;
 
     public static int minMoney = 1500;
 
@@ -9,6 +9,7 @@ public class Blackhack {
     public static boolean gunOwned = false;
     public static int fakeFace = 0;
     public static int fakeAce = 0;
+    public static int cardIncinerator = 0;
 
     static List <Integer> cards = new LinkedList<>();
 
@@ -178,7 +179,10 @@ public class Blackhack {
             String lastValue = "";
             StringBuilder value = new StringBuilder();
 
-            if (values.size() == 2) {
+            if (values.size() == 1) {
+                value = new StringBuilder(values.getFirst());
+            }
+            else if (values.size() == 2) {
                 value = new StringBuilder(values.get(0) + " and a " + values.get(1));
             } else {
                 lastValue = values.getLast();
@@ -225,6 +229,9 @@ public class Blackhack {
                 if (fakeAce > 0) {
                     System.out.println("Ace");
                 }
+                if (cardIncinerator > 0) {
+                    System.out.println("Incinerator");
+                }
 
                 boolean decidingItem = true;
                 String item = null;
@@ -233,7 +240,7 @@ public class Blackhack {
                     System.out.print("What would you like to use? (name of item/nothing) > ");
                     item = input.next();
 
-                    if (!item.equalsIgnoreCase("gun") && !item.equalsIgnoreCase("face") && !item.equalsIgnoreCase("nothing") && !item.equalsIgnoreCase("ace")) {
+                    if (!item.equalsIgnoreCase("gun") && !item.equalsIgnoreCase("face") && !item.equalsIgnoreCase("nothing") && !item.equalsIgnoreCase("ace") && !item.equalsIgnoreCase("incinerator")) {
                         System.out.println("Please enter the name of an item or nothing.");
                     }
                     else {
@@ -275,6 +282,20 @@ public class Blackhack {
                     }
                     else {
                         System.out.println("You do not own a face card!");
+                    }
+                    return true;
+                }
+                else if (item.equalsIgnoreCase("incinerator")) {
+                    if (cardIncinerator > 0) {
+                        List<String> value = new LinkedList<>();
+                        value = (List<String>) numToCard(playerCards);
+                        System.out.println("You grab your " + value.getLast() + " and drop it into your portable incinerator.");
+                        System.out.println("However, while that card does burn, so does your incinerator. ");
+                        playerCards.removeLast();
+                        cardIncinerator -= 1;
+                    }
+                    else {
+                        System.out.println("You do not own a portable incinerator!");
                     }
                     return true;
                 }
@@ -478,6 +499,7 @@ public class Blackhack {
                 System.out.println("1. A gun ($300)");
                 System.out.println("2. A face card ($200)");
                 System.out.println("3. An ace ($400)");
+                System.out.println("4. A portable incinerator ($500)");
                 System.out.print("Type the number of the item you would like to purchase. > ");
 
                 Scanner input = new Scanner(System.in);
@@ -514,6 +536,13 @@ public class Blackhack {
                         fakeAce += 1;
                         money -= 400;
                         System.out.println("You purchased a face card for $400.");
+                        System.out.println("The shady man waves you away.");
+                        done = true;
+                    }
+                    else if (option == 4) {
+                        cardIncinerator += 1;
+                        money -= 500;
+                        System.out.println("You purchased a portable incinerator for $500.");
                         System.out.println("The shady man waves you away.");
                         done = true;
                     }
