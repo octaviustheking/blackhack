@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Blackhack {
-    public static int money = 11500;
+    public static int money = 500;
 
     public static int minMoney = 1500;
 
@@ -535,7 +535,7 @@ public class Blackhack {
                     else if (option == 3) {
                         fakeAce += 1;
                         money -= 400;
-                        System.out.println("You purchased a face card for $400.");
+                        System.out.println("You purchased a ace card for $400.");
                         System.out.println("The shady man waves you away.");
                         done = true;
                     }
