@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Blackhack {
-    public static int money = 500;
+    public static int money = 5200;
 
     public static int minMoney = 1500;
 
@@ -10,6 +10,10 @@ public class Blackhack {
     public static int fakeFace = 0;
     public static int fakeAce = 0;
     public static int cardIncinerator = 0;
+    public static int negativeCards = 0;
+    public static int doubleUps = 0;
+
+    public static int bet = 0;
 
     static List <Integer> cards = new LinkedList<>();
 
@@ -25,6 +29,8 @@ public class Blackhack {
             System.out.println("Thanks for playing Blackhack, though!");
             System.exit(0);
         }
+
+        cards.clear();
 
         for (int i = 1; i <= 4; i++) {
             cards.add(2);
@@ -46,7 +52,7 @@ public class Blackhack {
 
         Scanner input = new Scanner(System.in);
 
-        int bet = 0;
+        bet = 0;
 
         boolean decidingVisit = true;
 
@@ -81,7 +87,7 @@ public class Blackhack {
 
             bet = input.nextInt();
 
-            if (bet < 0) {
+            if (bet <= 0) {
                 System.out.println("Please enter an amount greater than 0.");
             }
             else if (bet <= money) {
@@ -102,7 +108,7 @@ public class Blackhack {
         boolean playing = true;
 
         while (playing) {
-            playing = gameplay(playerCards, input, bet);
+            playing = gameplay(playerCards, input);
         }
     }
 
@@ -148,7 +154,7 @@ public class Blackhack {
             }
         }
 
-        if (21 - value >= 11) {
+        if (value < 12) {
             if (numAces >= 1) {
                 value += 10;
             }
@@ -166,7 +172,7 @@ public class Blackhack {
         return card;
     }
 
-    static boolean gameplay(List <Integer> playerCards, Scanner input, int bet) {
+    static boolean gameplay(List <Integer> playerCards, Scanner input) {
         boolean decidingAction = true;
 
         String action = null;
@@ -209,12 +215,12 @@ public class Blackhack {
                 }
             }
             else {
-                gameOver(bet);
+                gameOver();
             }
         }
 
         if (action.equals("stand")) {
-            dealerTurn(total, bet);
+            dealerTurn(total);
             return false;
         }
         else if (action.equals("inventory")) {
@@ -224,13 +230,19 @@ public class Blackhack {
                     System.out.println("Gun");
                 }
                 if (fakeFace > 0) {
-                    System.out.println("Face");
+                    System.out.println(fakeFace + "x Face");
                 }
                 if (fakeAce > 0) {
-                    System.out.println("Ace");
+                    System.out.println(fakeAce + "x Ace");
                 }
                 if (cardIncinerator > 0) {
-                    System.out.println("Incinerator");
+                    System.out.println(cardIncinerator + "x Incinerator");
+                }
+                if (negativeCards > 0) {
+                    System.out.println(negativeCards + "x Negative");
+                }
+                if (doubleUps > 0) {
+                    System.out.println(doubleUps + "x Double");
                 }
 
                 boolean decidingItem = true;
@@ -240,7 +252,7 @@ public class Blackhack {
                     System.out.print("What would you like to use? (name of item/nothing) > ");
                     item = input.next();
 
-                    if (!item.equalsIgnoreCase("gun") && !item.equalsIgnoreCase("face") && !item.equalsIgnoreCase("nothing") && !item.equalsIgnoreCase("ace") && !item.equalsIgnoreCase("incinerator")) {
+                    if (!item.equalsIgnoreCase("gun") && !item.equalsIgnoreCase("face") && !item.equalsIgnoreCase("nothing") && !item.equalsIgnoreCase("ace") && !item.equalsIgnoreCase("incinerator") && !item.equalsIgnoreCase("negative") && !item.equalsIgnoreCase("double")) {
                         System.out.println("Please enter the name of an item or nothing.");
                     }
                     else {
@@ -299,6 +311,56 @@ public class Blackhack {
                     }
                     return true;
                 }
+                else if (item.equalsIgnoreCase("negative")) {
+                    if (negativeCards > 0) {
+                        System.out.println("You quickly pull out your blank negative card.");
+                        System.out.print("What number would you like to write on it? > ");
+
+                        boolean writingDone = false;
+                        int number = 0;
+                        while (!writingDone) {
+                            while (!input.hasNextInt()) {
+                                input.next();
+                                System.out.print("Please enter an integer. > ");
+                            }
+
+                            number = input.nextInt();
+
+                            if (number >= 2 && number <= 10) {
+                                System.out.println("You quickly write a -" + number + " on the card, then sneak it into your hand.");
+                                writingDone = true;
+                            } else if (number < 2) {
+                                System.out.println("Please enter a number that is at least 2!");
+                            } else {
+                                System.out.println("Please enter a number that is less than or equal to 10!");
+                            }
+                        }
+
+                        playerCards.add(number * -1);
+                        negativeCards -= 1;
+                    }
+                    else {
+                        System.out.println("You do not own a negative card!");
+                    }
+                    return true;
+                }
+                else if (item.equalsIgnoreCase("double")) {
+                    if (doubleUps > 0) {
+                        if (bet * 2 > money) {
+                            System.out.println("You do not have enough money to double your bet!");
+                        }
+                        else {
+                            System.out.println("You pull a button that says it can only be used once out of your pocket. ");
+                            System.out.println("You slam it and double your bet.");
+                            bet *= 2;
+                            doubleUps -= 1;
+                        }
+                    }
+                    else {
+                        System.out.println("You do not own a double up!");
+                    }
+                    return true;
+                }
                 else {
                     return true;
                 }
@@ -315,7 +377,7 @@ public class Blackhack {
         }
     }
 
-    static void dealerTurn(int playerTotal, int bet) {
+    static void dealerTurn(int playerTotal) {
         int card1 = newCard();
         int card2 = newCard();
 
@@ -381,11 +443,11 @@ public class Blackhack {
             }
         }
         else if (dealerTotal > playerTotal) {
-            gameOver(bet);
+            gameOver();
         }
         else if (dealerTotal == playerTotal) {
             System.out.println("You tied! The dealer wins!");
-            gameOver(bet);
+            gameOver();
         }
         else {
             System.out.println("You won!");
@@ -448,7 +510,7 @@ public class Blackhack {
         return dealerTotal;
     }
 
-    static void gameOver(int bet) {
+    static void gameOver() {
         System.out.println("You lost!");
         System.out.println("That means you lost $" + bet + "!");
         money -= bet;
@@ -500,6 +562,8 @@ public class Blackhack {
                 System.out.println("2. A face card ($200)");
                 System.out.println("3. An ace ($400)");
                 System.out.println("4. A portable incinerator ($500)");
+                System.out.println("5. A negative card ($500)");
+                System.out.println("6. A double up ($250)");
                 System.out.print("Type the number of the item you would like to purchase. > ");
 
                 Scanner input = new Scanner(System.in);
@@ -535,7 +599,7 @@ public class Blackhack {
                     else if (option == 3) {
                         fakeAce += 1;
                         money -= 400;
-                        System.out.println("You purchased a ace card for $400.");
+                        System.out.println("You purchased an ace card for $400.");
                         System.out.println("The shady man waves you away.");
                         done = true;
                     }
@@ -543,6 +607,20 @@ public class Blackhack {
                         cardIncinerator += 1;
                         money -= 500;
                         System.out.println("You purchased a portable incinerator for $500.");
+                        System.out.println("The shady man waves you away.");
+                        done = true;
+                    }
+                    else if (option == 5) {
+                        negativeCards += 1;
+                        money -= 500;
+                        System.out.println("You purchased a blank negative card for $500.");
+                        System.out.println("The shady man waves you away.");
+                        done = true;
+                    }
+                    else if (option == 6) {
+                        doubleUps += 1;
+                        money -= 250;
+                        System.out.println("You purchased a double up for $250.");
                         System.out.println("The shady man waves you away.");
                         done = true;
                     }
