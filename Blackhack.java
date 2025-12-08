@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Blackhack {
-    public static int money = 5200;
+    public static int money = 500;
 
     public static int minMoney = 1500;
 
