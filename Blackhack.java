@@ -267,6 +267,7 @@ public class Blackhack {
                         System.out.println("As you stand to leave, however, the police arrive. ");
                         System.out.println("You are placed in handcuffs are dragged outside. ");
                         System.out.println("Thanks for playing Blackhack!");
+                        System.exit(0);
                         return false;
                     }
                     else {
